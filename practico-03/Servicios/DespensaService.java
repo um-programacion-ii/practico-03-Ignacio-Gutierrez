@@ -4,9 +4,7 @@ import Entidades.*;
 import Excepciones.StockInsuficiente;
 import Excepciones.VidaUtilInsuficiente;
 import Interfaces.Cocinable;
-import Recetas.ArrozConLeche;
-import Recetas.HuevoDuro;
-import Recetas.TerneraAlHorno;
+import Recetas.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +17,9 @@ public class DespensaService {
         recetas.put(1, new ArrozConLeche());
         recetas.put(2, new HuevoDuro());
         recetas.put(3, new TerneraAlHorno());
+        recetas.put(4, new EnsaladaCesar());
+        recetas.put(5, new SopaDeVerduras());
+        recetas.put(6, new TartaDeManzana());
     }
 
 
