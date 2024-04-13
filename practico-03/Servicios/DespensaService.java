@@ -4,6 +4,7 @@ import Entidades.*;
 import Excepciones.StockInsuficiente;
 import Excepciones.VidaUtilInsuficiente;
 import Interfaces.Cocinable;
+import Interfaces.Ingrediente;
 import Recetas.*;
 
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class DespensaService {
         Receta receta = (Receta) recetas.get(numeroReceta);
 
         boolean ingredientesSuficientes = true;
-        for (Ingrediente ingrediente : receta.getIngredientes()) {
+        for (Entidades.Ingrediente ingrediente : receta.getIngredientes()) {
             String nombreIngrediente = ingrediente.getNombre();
             int cantidadRequerida = ingrediente.getCantidad();
             try {
@@ -61,6 +62,14 @@ public class DespensaService {
         for (Utensilio utensilio : despensa.getUtensilios().values()) {
             if (utensilio.getVidaUtil() <= 0) {
                 utensilio.setVidaUtil(500);
+            }
+        }
+    }
+
+    public static void renovarIngredientes(Despensa despensa) {
+        for (Ingrediente ingrediente : despensa.getIngredientes().values()) {
+            if (ingrediente.getCantidad() <= 0) {
+                ingrediente.setCantidad(5000);
             }
         }
     }

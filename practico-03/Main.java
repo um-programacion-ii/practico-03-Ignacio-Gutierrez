@@ -5,10 +5,13 @@ import Entidades.Utensilio;
 import Servicios.DespensaService;
 
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws InterruptedException {
+        ExecutorService executorService1 = Executors.newFixedThreadPool(3);
+        ExecutorService executorService2 = Executors.newFixedThreadPool(5);
 
         //chef's de Domingo a Jueves
         Despensa despensa1 = new Despensa();
@@ -38,7 +41,7 @@ public class Main {
         Chef chef8 = new Chef("Christophe Krywonis", 0, despensa8);
 
 
-        List<Despensa> despensas = Arrays.asList(despensa1, despensa2, despensa3, despensa4, despensa6, despensa7, despensa8);
+        List<Despensa> despensas = Arrays.asList(despensa1, despensa2, despensa3, despensa4, despensa7, despensa8);
 
 
         List<Ingrediente> ingredientes = Arrays.asList(
@@ -92,6 +95,15 @@ public class Main {
             }
         }
 
+        for (Ingrediente original : ingredientes) {
+            Ingrediente copy = new Ingrediente(original.getNombre(), 0);
+            despensa6.addElemento(copy);
+        }
+        for (Utensilio original : utensilios) {
+            Utensilio copy = new Utensilio(original.getNombre(), 0);
+            despensa6.addUtensilio(copy);
+        }
+
         Map<String, Integer> recetas = new HashMap<>();
         recetas.put("\nArroz con Leche:", 1);
         recetas.put("\nHuevo Duro:", 2);
@@ -110,21 +122,53 @@ public class Main {
 
         Random random = new Random();
 
-        chefsDomingoAJueves.forEach(chef -> {
-            Map.Entry<String, Integer> recetaAleatoria = recetasList.get(random.nextInt(recetasList.size()));
-            System.out.println(recetaAleatoria.getKey());
-            chef.prepararReceta(recetaAleatoria.getValue());
-        });
+        System.out.printf(" Domingo a Jueves\n-----------------------------\n");
+        final AtomicInteger iteracion = new AtomicInteger(0);
+        for (Chef chef : chefsDomingoAJueves) {
+            for (int i = 0; i < 3; i++) {
+                executorService1.submit(() -> {
+                    Map.Entry<String, Integer> recetaAleatoria = recetasList.get(random.nextInt(recetasList.size()));
+                    System.out.println(recetaAleatoria.getKey());
+                    chef.prepararReceta(recetaAleatoria.getValue());
+                    iteracion.incrementAndGet();
+                });
+            }
+        }
 
-        chefsViernesADomingoYFeriados.forEach(chef -> {
-            Map.Entry<String, Integer> recetaAleatoria = recetasList.get(random.nextInt(recetasList.size()));
-            System.out.println(recetaAleatoria.getKey());
-            chef.prepararReceta(recetaAleatoria.getValue());
-        });
 
-        DespensaService.renovarUtensilios(despensa5);
+        executorService1.shutdown();
+        try {
+            executorService1.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.printf("\nIteraciones: %d\n", iteracion.get());
+
+        final AtomicInteger iteracion2 = new AtomicInteger(0);
+        System.out.printf("\n Viernes a Domingo y Feriados\n-----------------------------\n");
+        for (Chef chef : chefsViernesADomingoYFeriados) {
+            for (int i = 0; i < 3; i++) {
+                executorService2.submit(() -> {
+                    Map.Entry<String, Integer> recetaAleatoria = recetasList.get(random.nextInt(recetasList.size()));
+                    System.out.println(recetaAleatoria.getKey());
+                    chef.prepararReceta(recetaAleatoria.getValue());
+                    iteracion2.incrementAndGet();
+                });
+            }
+        }
+
+        executorService2.shutdown();
+        try {
+            executorService2.awaitTermination(1, TimeUnit.HOURS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.printf("\nIteraciones: %d\n", iteracion2.get());
+
+        DespensaService.renovarUtensilios(despensa6);
+        DespensaService.renovarIngredientes(despensa6);
 
         System.out.println("\nArroz con Leche:");
-        chef5.prepararReceta(1);
+        chef6.prepararReceta(1);
     }
 }

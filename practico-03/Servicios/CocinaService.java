@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CocinaService {
+    private static volatile CocinaService instancia = null;
+    private static final Object lock = new Object();
+
     private static final Map<Integer, Cocinable> recetas = new HashMap<>();
 
     static {
@@ -19,6 +22,19 @@ public class CocinaService {
         recetas.put(4, new EnsaladaCesar());
         recetas.put(5, new SopaDeVerduras());
         recetas.put(6, new TartaDeManzana());
+    }
+
+    private CocinaService() {}
+
+    public static CocinaService obtenerInstancia() {
+        if (instancia == null) {
+            synchronized (lock) {
+                if (instancia == null) {
+                    instancia = new CocinaService();
+                }
+            }
+        }
+        return instancia;
     }
 
     public static void comenzarACocinar(int numeroReceta, Despensa despensa) throws VidaUtilInsuficiente, StockInsuficiente {

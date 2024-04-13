@@ -1,9 +1,6 @@
 package Entidades;
 
-import Excepciones.StockInsuficiente;
-import Interfaces.Despensable;
-
-public class Ingrediente implements Despensable {
+public class Ingrediente implements Interfaces.Ingrediente {
     private String nombre;
     private int cantidad;
 
@@ -33,13 +30,12 @@ public class Ingrediente implements Despensable {
         this.nombre = nombre;
     }
 
-
-
     @Override
     public void getClass(int i) {
 
     }
 
+    @Override
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }

@@ -1,9 +1,9 @@
 package Entidades;
 
-import Interfaces.Despensable;
+import Interfaces.Ingrediente;
 import Interfaces.Reutilizable;
 
-public class Utensilio implements Despensable, Reutilizable {
+public class Utensilio implements Ingrediente, Reutilizable {
     private String nombre;
     private int vidaUtil;
 
@@ -29,6 +29,11 @@ public class Utensilio implements Despensable, Reutilizable {
     @Override
     public int getCantidad() {
         return 0;
+    }
+
+    @Override
+    public void setCantidad(int i) {
+
     }
 
     public int getVidaUtil() {

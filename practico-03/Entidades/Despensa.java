@@ -2,29 +2,29 @@ package Entidades;
 
 import Excepciones.StockInsuficiente;
 import Excepciones.VidaUtilInsuficiente;
-import Interfaces.Despensable;
+import Interfaces.Ingrediente;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Despensa {
-    private Map<String, Despensable> elementos = new HashMap<>();
+    private Map<String, Ingrediente> ingredientes = new HashMap<>();
     private Map<String, Utensilio> utensilios = new HashMap<>();
 
 
-    public void addElemento(Despensable nuevoElemento) {
+    public void addElemento(Ingrediente nuevoElemento) {
         String nombre = nuevoElemento.getNombre().toString();
-        if (elementos.containsKey(nombre)) {
-            Despensable existente = elementos.get(nombre);
+        if (ingredientes.containsKey(nombre)) {
+            Ingrediente existente = ingredientes.get(nombre);
             existente.getClass(existente.getCantidad() + nuevoElemento.getCantidad());
         } else {
-            elementos.put(nombre, nuevoElemento);
+            ingredientes.put(nombre, nuevoElemento);
         }
     }
 
     public void getElemento(String nombre, int cantidad) throws StockInsuficiente {
-        if (elementos.containsKey(nombre)) {
-            Despensable elemento = elementos.get(nombre);
+        if (ingredientes.containsKey(nombre)) {
+            Ingrediente elemento = ingredientes.get(nombre);
             if (elemento.getCantidad() < cantidad) {
                 throw new StockInsuficiente("No es posible retirar " + cantidad + " de " + nombre + ", no hay en la despensa.");
             }
@@ -35,8 +35,8 @@ public class Despensa {
     }
 
     public boolean checkElemento(String nombre, int cantidad) throws StockInsuficiente {
-        if (elementos.containsKey(nombre)) {
-            Despensable elemento = elementos.get(nombre);
+        if (ingredientes.containsKey(nombre)) {
+            Ingrediente elemento = ingredientes.get(nombre);
             if (elemento.getCantidad() >= cantidad) {
                 return true;
             } else {
@@ -49,11 +49,14 @@ public class Despensa {
 
     public void mostrarElemento() {
         System.out.println("Elementos en la despensa:");
-        for (Map.Entry<String, Despensable> entry : elementos.entrySet()) {
+        for (Map.Entry<String, Ingrediente> entry : ingredientes.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue().getCantidad());
         }
     }
 
+    public Map<String, Ingrediente> getIngredientes() {
+        return ingredientes;
+    }
 
     public void addUtensilio(Utensilio nuevoUtensilio) {
         String nombre = nuevoUtensilio.getNombre().toString();
@@ -74,7 +77,7 @@ public class Despensa {
 
     public boolean checkUtensilio(String nombre, int vidaUtil) throws VidaUtilInsuficiente {
         if (utensilios.containsKey(nombre)) {
-            Despensable utensilio = utensilios.get(nombre);
+            Ingrediente utensilio = utensilios.get(nombre);
             if (((Utensilio) utensilio).getVidaUtil() >= vidaUtil) {
                 return true;
             } else {
